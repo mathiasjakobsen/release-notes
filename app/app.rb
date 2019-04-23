@@ -47,7 +47,7 @@ class ReleaseApp < Sinatra::Base
   get '/:repo' do
     unless ALLOWED_IPS.include?(request.ip)
       puts "Request from #{request.ip} was denied"
-      return 'No.'
+      return "No, #{request.ip}."
     end
 
     name = params[:repo]
