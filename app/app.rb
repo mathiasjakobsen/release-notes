@@ -8,6 +8,8 @@ BEARER = ENV['BEARER']
 TOKENS = ENV['TOKENS'].split(',')
 
 class ReleaseApp < Sinatra::Base
+  set :protection, except: :frame_options
+
   http = GraphQL::Client::HTTP.new('https://api.github.com/graphql') do
     def headers(_)
       {
