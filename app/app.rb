@@ -45,7 +45,10 @@ class ReleaseApp < Sinatra::Base
   end
 
   get '/:repo' do
-    return 'No.' unless ALLOWED_IPS.include?(request.ip)
+    unless ALLOWED_IPS.include?(request.ip)
+      puts "Request from #{request.ip} was denied"
+      return 'No.'
+    end
 
     name = params[:repo]
     releases = client.query(QUERY, variables: { owner: OWNER, name: name })
