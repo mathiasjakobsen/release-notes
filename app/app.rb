@@ -26,7 +26,7 @@ class ReleaseApp < Sinatra::Base
       repository(owner: $owner, name: $name) {
         id
         descriptionHTML
-        releases(first: 25) {
+        releases(first: 100,  orderBy: { field: CREATED_AT, direction: DESC }) {
           totalCount
           edges {
             cursor
@@ -35,6 +35,10 @@ class ReleaseApp < Sinatra::Base
               createdAt
               name
               publishedAt
+              author {
+                avatarUrl
+                name
+              }
             }
           }
         }
@@ -58,7 +62,9 @@ class ReleaseApp < Sinatra::Base
         title: edge.node.name,
         created_at: Date.iso8601(edge.node.created_at).strftime,
         published_at: Date.iso8601(edge.node.published_at).strftime,
-        html: markdown.render(edge.node.description)
+        html: markdown.render(edge.node.description),
+        img: edge.node.author.avatar_url,
+        name: edge.node.author.name,
       }
     end
 
