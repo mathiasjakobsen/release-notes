@@ -5,7 +5,7 @@ require 'graphql/client/http'
 
 OWNER = ENV['OWNER']
 BEARER = ENV['BEARER']
-ALLOWED_IPS = ['89.221.173.158', 'localhost', '127.0.0.1', '::1'].freeze
+TOKENS = ENV['TOKENS'].split(',')
 
 class ReleaseApp < Sinatra::Base
   http = GraphQL::Client::HTTP.new('https://api.github.com/graphql') do
@@ -45,10 +45,7 @@ class ReleaseApp < Sinatra::Base
   end
 
   get '/:repo' do
-    unless ALLOWED_IPS.include?(request.ip)
-      puts "Request from #{request.ip} was denied"
-      return "No, #{request.ip}."
-    end
+    return 'No.' unless TOKENS.include?(params['bearer'])
 
     name = params[:repo]
     releases = client.query(QUERY, variables: { owner: OWNER, name: name })
